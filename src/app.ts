@@ -1,36 +1,90 @@
-import { Component } from "./components/component.js";
-import { ImageComponent } from "./components/page/item/image.js";
-import { NoteComponenet } from "./components/page/item/note.js";
-import { TodoComponenet } from "./components/page/item/todo.js";
+import { TextSectionInput } from "./components/dialog/input/text-input.js";
+import { MediaSectionInput } from "./components/dialog/input/media-input.js";
+import { InputDialog } from "./components/dialog/dialog.js";
 import { VideoComponent } from "./components/page/item/video.js";
+import { TodoComponent } from "./components/page/item/todo.js";
+import { NoteComponent } from "./components/page/item/note.js";
+import { ImageComponent } from "./components/page/item/image.js";
 import {
   Composable,
   PageComponent,
   PageItemComponent,
 } from "./components/page/page.js";
+import { Component } from "./components/component.js";
+
 class App {
   private readonly page: Component & Composable;
-  constructor(appRoot: HTMLElement) {
+  constructor(appRoot: HTMLElement, dialogRoot: HTMLElement) {
     this.page = new PageComponent(PageItemComponent);
     this.page.attachTo(appRoot);
 
-    const image = new ImageComponent(
-      "Image Title",
-      "https://picsum.photos/600/300",
-    );
-    this.page.addChild(image);
+    const imageBtn = document.querySelector("#new-image")! as HTMLButtonElement;
+    imageBtn.addEventListener("click", () => {
+      const dialog = new InputDialog();
+      const inputSection = new MediaSectionInput();
+      dialog.addChild(inputSection);
+      dialog.attachTo(dialogRoot);
 
-    const note = new NoteComponenet("note Title", "note body");
-    this.page.addChild(note);
+      dialog.setOnCloseListenr(() => {
+        dialog.removeFrom(dialogRoot);
+      });
+      dialog.setOnSubmitListenr(() => {
+        const image = new ImageComponent(inputSection.title, inputSection.url);
+        this.page.addChild(image);
+        dialog.removeFrom(dialogRoot);
+      });
+    });
 
-    const todo = new TodoComponenet("todo Title", "todo item");
-    this.page.addChild(todo);
-    const video = new VideoComponent(
-      "Video Title",
-      "https://www.youtube.com/watch?v=Lk4e1mk4lJU",
-    );
-    this.page.addChild(video);
+    const videoBtn = document.querySelector("#new-video")! as HTMLButtonElement;
+    videoBtn.addEventListener("click", () => {
+      const dialog = new InputDialog();
+      const inputSection = new MediaSectionInput();
+      dialog.addChild(inputSection);
+      dialog.attachTo(dialogRoot);
+
+      dialog.setOnCloseListenr(() => {
+        dialog.removeFrom(dialogRoot);
+      });
+      dialog.setOnSubmitListenr(() => {
+        const image = new VideoComponent(inputSection.title, inputSection.url);
+        this.page.addChild(image);
+        dialog.removeFrom(dialogRoot);
+      });
+    });
+    const noteBtn = document.querySelector("#new-note")! as HTMLButtonElement;
+    noteBtn.addEventListener("click", () => {
+      const dialog = new InputDialog();
+      const inputSection = new TextSectionInput();
+      dialog.addChild(inputSection);
+      dialog.attachTo(dialogRoot);
+
+      dialog.setOnCloseListenr(() => {
+        dialog.removeFrom(dialogRoot);
+      });
+      dialog.setOnSubmitListenr(() => {
+        const image = new NoteComponent(inputSection.title, inputSection.body);
+        this.page.addChild(image);
+        dialog.removeFrom(dialogRoot);
+      });
+    });
+
+    const todoBtn = document.querySelector("#new-todo")! as HTMLButtonElement;
+    todoBtn.addEventListener("click", () => {
+      const dialog = new InputDialog();
+      const inputSection = new TextSectionInput();
+      dialog.addChild(inputSection);
+      dialog.attachTo(dialogRoot);
+
+      dialog.setOnCloseListenr(() => {
+        dialog.removeFrom(dialogRoot);
+      });
+      dialog.setOnSubmitListenr(() => {
+        const image = new TodoComponent(inputSection.title, inputSection.body);
+        this.page.addChild(image);
+        dialog.removeFrom(dialogRoot);
+      });
+    });
   }
 }
 
-new App(document.querySelector(".document")! as HTMLElement);
+new App(document.querySelector(".document")! as HTMLElement, document.body);

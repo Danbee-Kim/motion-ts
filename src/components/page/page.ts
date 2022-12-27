@@ -1,12 +1,11 @@
 import { BaseComponent, Component } from "./../component.js";
-import { NoteComponenet } from "./item/note.js";
 
 export interface Composable {
   addChild(child: Component): void;
 }
 type OnCloseListener = () => void;
 
-interface SectionContainer extends NoteComponenet, Composable {
+interface SectionContainer extends Component, Composable {
   setOnCloseListener(listener: OnCloseListener): void;
 }
 
